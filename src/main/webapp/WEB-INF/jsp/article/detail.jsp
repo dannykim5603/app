@@ -120,6 +120,8 @@ body {
 				var fileUploadFormData = new FormData(form);
 				fileUploadFormData.delete("relTypeCode");
 				fileUploadFormData.delete("relId");
+				fileUploadFormData.delete("body");
+				
 				$.ajax({
 					url : './../file/doUploadAjax',
 					data : fileUploadFormData,
@@ -146,8 +148,15 @@ body {
 			};
 			startUploadFiles(function(data) {
 				var idsStr = data.body.fileIdsStr;
+				if (data && data.body && data.body.fileIdsStr) {
+					idsStr = data.body.fileIdsStr;
+				}
 				startWriteReply(idsStr, function(data) {
+					if (data.msg) {
+						alert(data.msg)	
+					}
 					form.body.value = '';
+					form.file__reply__0__common_attachment__1.value = '';
 				});
 			});
 		}
@@ -155,8 +164,8 @@ body {
 
 	<form class="table-box con form1"
 		onsubmit="ArticleWriteReplyForm__submit(this); return false;">
-		<input type="hidden" name="relTypeCode" value="article" /> 
-		<input type="hidden" name="relId" value="${article.id}" />
+		<input type="hidden" name="relTypeCode" value="article" /> <input
+			type="hidden" name="relId" value="${article.id}" />
 		<table>
 			<tbody>
 				<tr>
@@ -173,9 +182,7 @@ body {
 								name="file__reply__0__common__attachment__1">
 						</div>
 					</td>
-					<td>
-					<input type="submit" value="작성">
-					</td>
+					<td><input type="submit" value="작성"></td>
 				</tr>
 			</tbody>
 		</table>
@@ -330,7 +337,8 @@ body {
 		html += '<div class="reply-body">' + reply.body + '</div>';
 		if (reply.extra.file__common__attachment__1) {
             var file = reply.extra.file__common__attachment__1;
-            html += '<video controls src="http://localhost:8085/usr/file/streamVideo?id=' + file.id + '">video not supported</video>';
+            html += '<video controls src="
+                /usr/file/streamVideo?id=' + file.id + '">video not supported</video>';
         }
 		
 		html += '</td>';
